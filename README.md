@@ -68,14 +68,16 @@ Planned: `src/platform/`, `src/gfx/`, `src/wm/`, `src/apps/`, `assets/`, `conten
 - [x] Toolchain installed (native + emsdk)
 - [x] CMake + presets
 - [x] **Step 1:** includes (`<SDL.h>`, `<GLES3/gl3.h>`, `<emscripten.h>` guarded by `#ifdef`)
-- [ ] **Step 2:** `SDL_Init(SDL_INIT_VIDEO)` with an error check. Builds; still to do: `int main(int, char**)`, `<cstdio>`, `\n`, `fprintf(stderr, ...)`
-- [ ] **Step 3:** `SDL_GL_SetAttribute` for ES 3.0 (profile mask, major, minor), *before* creating the window
-- [ ] **Step 4:** `SDL_CreateWindow` with `SDL_WINDOW_OPENGL`
-- [ ] **Step 5:** `SDL_GL_CreateContext`
-- [ ] **Step 6:** frame function: `SDL_PollEvent` → `glClearColor`/`glClear` → `SDL_GL_SwapWindow`
-- [ ] **Step 7:** main loop: `while (running)` natively, `emscripten_set_main_loop_arg` on the web (state passed in a struct as `void*`)
-- [ ] **Step 8:** cleanup: `SDL_GL_DeleteContext`, `SDL_DestroyWindow`, `SDL_Quit`
-- [ ] Bonus: print `glGetString(GL_VERSION)`
+- [x] **Step 2:** `SDL_Init(SDL_INIT_VIDEO)` with an error check
+- [x] **Step 3:** `SDL_GL_SetAttribute` for ES 3.0 (profile mask, major, minor), *before* creating the window
+- [x] **Step 4:** `SDL_CreateWindow` with `SDL_WINDOW_OPENGL`, null-checked
+- [x] **Step 5:** `SDL_GL_CreateContext`, null-checked; error paths clean up in reverse order; vsync via `SDL_GL_SetSwapInterval(1)`
+- [x] **Step 6:** `frame(void*)` function: `SDL_PollEvent` → `glClearColor`/`glClear` → `SDL_GL_SwapWindow`, with state in a `static AppState` struct
+- [ ] **Step 7:** main loop. Native half done (`while (state.running) frame(&state);`). Still to do: `#ifdef __EMSCRIPTEN__` branch calling `emscripten_set_main_loop_arg(frame, &state, 0, true)`, then build and run with the `web` preset
+- [x] **Step 8:** cleanup after the loop: `SDL_GL_DeleteContext`, `SDL_DestroyWindow`, `SDL_Quit`
+- [ ] Bonus: print `glGetString(GL_VERSION)` (should start with `OpenGL ES 3.`)
+
+Small cleanups to do in `main.cpp`: use `static_cast<AppState*>(arg)` instead of the C-style cast; remove the redundant `state.running = true;` before the loop.
 
 ### Later milestones
 - 2D batched renderer, text via a font atlas
@@ -92,4 +94,3 @@ Planned: `src/platform/`, `src/gfx/`, `src/wm/`, `src/apps/`, `assets/`, `conten
 - Lazy Foo' SDL2 tutorials (setup and event loop): https://lazyfoo.net/tutorials/SDL/
 - Emscripten docs: https://emscripten.org/docs/
 - cppreference: https://en.cppreference.com/
-
