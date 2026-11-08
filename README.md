@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Vaporwave Desktop Resume
 
 An interactive resume presented as a Windows XP–inspired desktop with a vaporwave aesthetic, written in C++23 and compiled to WebAssembly for the browser.
@@ -93,6 +92,4 @@ Planned: `src/platform/`, `src/gfx/`, `src/wm/`, `src/apps/`, `assets/`, `conten
 - Lazy Foo' SDL2 tutorials (setup and event loop): https://lazyfoo.net/tutorials/SDL/
 - Emscripten docs: https://emscripten.org/docs/
 - cppreference: https://en.cppreference.com/
-=======
-# resume
->>>>>>> resume/main
+
